@@ -85,7 +85,7 @@ export async function POST(request: Request) {
 
         // Email Content
         const mailOptions = {
-            from: `"Feedback Form" <${process.env.FEEDBACK_EMAIL_USER}>`,
+            from: process.env.FEEDBACK_EMAIL_USER, // Remove friendly name to prevent strict server rejection
             to: process.env.FEEDBACK_TO_EMAIL || process.env.FEEDBACK_EMAIL_USER,
             replyTo: email,
             subject: `[Feedback: ${type}] ${subject || 'No Subject'} - AI Hediye`,
