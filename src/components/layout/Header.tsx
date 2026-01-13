@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useWizard } from '@/context/WizardContext';
@@ -38,9 +39,15 @@ export default function Header() {
         <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
             <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 sm:px-6">
                 {/* Logo - Navigates to Home */}
-                <Link href="/" onClick={handleHomeClick} className="flex items-center gap-2 text-lg font-semibold text-white transition-colors duration-200 hover:text-[#F47F7F]">
-                    <span className="text-2xl">🎁</span>
-                    <span>AI Hediye</span>
+                <Link href="/" onClick={handleHomeClick} className="relative flex items-center h-full py-1 transition-opacity duration-200 hover:opacity-80">
+                    <Image
+                        src="/logo.png"
+                        alt="AI Hediye Logo"
+                        width={370}
+                        height={130}
+                        className="h-[32px] w-auto sm:h-[44px] object-contain"
+                        priority
+                    />
                 </Link>
 
                 {/* Navigation - Hidden in Wizard and Results */}

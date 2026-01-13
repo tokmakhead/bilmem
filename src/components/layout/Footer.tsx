@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Footer() {
@@ -25,10 +26,15 @@ export default function Footer() {
                 <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
                     {/* Brand Section */}
                     <div className="lg:col-span-5 flex flex-col gap-6">
-                        <div className="flex items-center gap-2 text-2xl font-black tracking-tighter text-white">
-                            <span className="text-3xl">🎁</span>
-                            <span>AI Hediye</span>
-                        </div>
+                        <Link href="/" className="relative flex items-center w-fit transition-opacity hover:opacity-80">
+                            <Image
+                                src="/logo.png"
+                                alt="AI Hediye Logo"
+                                width={370}
+                                height={130}
+                                className="h-[40px] w-auto sm:h-[50px] object-contain"
+                            />
+                        </Link>
                         <p className="max-w-xs text-[15px] font-medium leading-relaxed text-slate-400">
                             Yapay zeka teknolojisi ile sevdikleriniz için en anlamlı hediyeleri saniyeler içinde keşfedin.
                         </p>
