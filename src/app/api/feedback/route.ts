@@ -46,81 +46,73 @@ export async function POST(request: Request) {
         requestLog.set(ip, recentRequests);
 
         // 4. Send Email via Nodemailer
-        // NOTE: In production, configure FEEDBACK_* environment variables
+        const host = process.env.FEEDBACK_SMTP_HOST;
+        const port = Number(process.env.FEEDBACK_SMTP_PORT) || 465;
+        const user = process.env.FEEDBACK_EMAIL_USER;
+        const pass = process.env.FEEDBACK_EMAIL_PASS;
 
-        // Check if configuration exists
-        if (!process.env.FEEDBACK_SMTP_HOST || !process.env.FEEDBACK_EMAIL_USER) {
-            // Dev mode: Log only if no config
-            if (process.env.NODE_ENV === 'development') {
-                console.log('=== FEEDBACK RECEIVED (No SMTP Config) ===');
-                console.log('Type:', type);
-                console.log('Subject:', subject);
-                console.log('Message:', message);
-                console.log('From:', email);
-                console.log('URL:', url);
-                console.log('UA:', userAgent);
-                console.log('==========================================');
-                return NextResponse.json({ success: true, mode: 'dev_log' });
-            } else {
-                // Prod: Error if no mailer configured
-                console.error('SMTP configuration missing for feedback form');
-                return NextResponse.json({ error: 'Sunucu yapılandırma hatası.' }, { status: 500 });
-            }
+        if (!host || !user || !pass) {
+            console.error('SMTP configuration missing');
+            return NextResponse.json({ error: 'Sunucu yapılandırma hatası.' }, { status: 500 });
         }
 
-        // SMTP Transporter
+        // SMTP Transporter - Ultimate Compatibility Mode
         const transporter = nodemailer.createTransport({
-            host: process.env.FEEDBACK_SMTP_HOST,
-            port: Number(process.env.FEEDBACK_SMTP_PORT) || 587,
-            secure: process.env.FEEDBACK_SMTP_SECURE === 'true',
+            host: host,
+            port: port,
+            secure: port === 465, // true for 465, false for other ports
             auth: {
-                user: process.env.FEEDBACK_EMAIL_USER,
-                pass: process.env.FEEDBACK_EMAIL_PASS,
+                user: user,
+                pass: pass,
             },
             tls: {
-                rejectUnauthorized: false, // Fix for some shared hosting certificate issues
-                ciphers: 'SSLv3'
-            }
+                // Do not fail on invalid certs
+                rejectUnauthorized: false,
+                // Force TLS v1.2 if possible, legacy support
+                minVersion: "TLSv1",
+            },
+            // Debugging
+            debug: true, // show debug output
+            logger: true, // log information in console
+            connectionTimeout: 10000, // 10 seconds
+            greetingTimeout: 10000, // 10 seconds
+            socketTimeout: 10000, // 10 seconds
         });
 
-        // Email Content
+        // Email Content - Simple & Clean
         const mailOptions = {
-            from: process.env.FEEDBACK_EMAIL_USER,
-            sender: process.env.FEEDBACK_EMAIL_USER, // Explicit sender
-            to: process.env.FEEDBACK_TO_EMAIL || process.env.FEEDBACK_EMAIL_USER,
-            replyTo: email,
-            envelope: {
-                from: process.env.FEEDBACK_EMAIL_USER as string, // Force Envelope From
-                to: (process.env.FEEDBACK_TO_EMAIL || process.env.FEEDBACK_EMAIL_USER) as string
-            },
+            from: user, // Must match authenticated user exactly
+            to: process.env.FEEDBACK_TO_EMAIL || user,
+            replyTo: email, // User's email for hitting "Reply"
             subject: `[Feedback: ${type}] ${subject || 'No Subject'} - AI Hediye`,
             text: `
-        Yeni Geri Bildirim:
-        
-        Tip: ${type}
-        Konu: ${subject || '-'}
-        Mesaj: ${message}
-        
-        ------------------------
-        Gönderen Email: ${email || 'Anonim'}
-        Sayfa: ${url}
-        Zaman: ${new Date().toLocaleString('tr-TR')}
-        IP: ${ip}
-        User Agent: ${userAgent}
-      `,
+Yeni Geri Bildirim:
+
+Tip: ${type}
+Konu: ${subject || '-'}
+Mesaj: ${message}
+
+------------------------
+Gönderen: ${email || 'Anonim'}
+Sayfa: ${url}
+IP: ${ip}
+Tarih: ${new Date().toLocaleString('tr-TR')}
+User Agent: ${userAgent}
+            `,
             html: `
-        <h3>Yeni Geri Bildirim</h3>
-        <p><strong>Tip:</strong> ${type}</p>
-        <p><strong>Konu:</strong> ${subject || '-'}</p>
-        <p><strong>Mesaj:</strong></p>
-        <blockquote style="border-left: 4px solid #eee; padding-left: 10px; color: #555;">
-          ${message.replace(/\n/g, '<br>')}
-        </blockquote>
-        <hr>
-        <p><small><strong>Email:</strong> ${email || 'Anonim'}</small></p>
-        <p><small><strong>Sayfa:</strong> ${url}</small></p>
-        <p><small><strong>Zaman:</strong> ${new Date().toLocaleString('tr-TR')}</small></p>
-      `
+<h3>Yeni Geri Bildirim</h3>
+<p><strong>Tip:</strong> ${type}</p>
+<p><strong>Konu:</strong> ${subject || '-'}</p>
+<p><strong>Mesaj:</strong></p>
+<blockquote style="border-left: 4px solid #eee; padding-left: 10px; color: #555;">
+  ${message.replace(/\n/g, '<br>')}
+</blockquote>
+<hr>
+<p><small><strong>Gönderen:</strong> ${email || 'Anonim'}</small></p>
+<p><small><strong>Sayfa:</strong> ${url}</small></p>
+<p><small><strong>IP:</strong> ${ip}</small></p>
+<p><small><strong>Tarih:</strong> ${new Date().toLocaleString('tr-TR')}</small></p>
+            `
         };
 
         await transporter.sendMail(mailOptions);
