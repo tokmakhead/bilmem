@@ -1,0 +1,62 @@
+﻿
+> ai-hediye@0.1.0 lint
+> eslint
+
+
+D:\ai-hediye\src\app\api\recommend\route.ts
+  3:10  warning  'GiftRecommendation' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ai-hediye\src\app\results\page.tsx
+   21:12  warning  'copyFeedback' is assigned a value but never used                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   67:11  warning  'handleShare' is assigned a value but never used                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   71:11  warning  'handleCopyLink' is assigned a value but never used                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   82:11  warning  'handleWhatsAppShare' is assigned a value but never used                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+   90:11  warning  'handleTwitterShare' is assigned a value but never used                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+  182:45  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\ai-hediye\src\app\wizard\page.tsx
+  7:8  warning  'Button' is defined but never used  @typescript-eslint/no-unused-vars
+  8:8  warning  'Card' is defined but never used    @typescript-eslint/no-unused-vars
+  9:8  warning  'Link' is defined but never used    @typescript-eslint/no-unused-vars
+
+D:\ai-hediye\src\components\home\AntigravityCanvas.tsx
+   18:5  warning  Compilation Skipped: Inline `class` declarations are not supported
+
+Move class declarations outside of components/hooks.
+
+D:\ai-hediye\src\components\home\AntigravityCanvas.tsx:18:5
+   16 |     const particlesRef = useRef<Particle[]>([]);
+   17 |
+>  18 |     class Particle {
+      |     ^^^^^^^^^^^^^^^^
+>  19 |         x: number = 0;
+      | ^^^^^^^^^^^^^^^^^^^^^^
+>  20 |         y: number = 0;
+      ÔÇĞ
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 108 |         }
+      | ^^^^^^^^^^^^^^^^^^^^^^
+> 109 |     }
+      | ^^^^^^ Inline `class` declarations are not supported
+  110 |
+  111 |     useEffect(() => {
+  112 |         const canvas = canvasRef.current;
+
+  react-hooks/unsupported-syntax
+  211:8  warning  React Hook useEffect has a missing dependency: 'Particle'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/exhaustive-deps
+
+D:\ai-hediye\src\components\layout\Header.tsx
+  49:25  error  Do not use an `<a>` element to navigate to `/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
+
+D:\ai-hediye\src\components\ui\SharePanel.tsx
+   86:79  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  101:82  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+D:\ai-hediye\src\components\ui\UpsellSection.tsx
+  11:41  warning  'onGenerateMore' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ai-hediye\src\lib\priceService.ts
+  28:21  warning  'query' is defined but never used  @typescript-eslint/no-unused-vars
+
+Ô£û 17 problems (3 errors, 14 warnings)
+
