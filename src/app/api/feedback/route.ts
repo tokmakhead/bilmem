@@ -72,11 +72,15 @@ export async function POST(request: Request) {
         const transporter = nodemailer.createTransport({
             host: process.env.FEEDBACK_SMTP_HOST,
             port: Number(process.env.FEEDBACK_SMTP_PORT) || 587,
-            secure: process.env.FEEDBACK_SMTP_SECURE === 'true', // true for 465, false for other ports
+            secure: process.env.FEEDBACK_SMTP_SECURE === 'true',
             auth: {
                 user: process.env.FEEDBACK_EMAIL_USER,
                 pass: process.env.FEEDBACK_EMAIL_PASS,
             },
+            tls: {
+                rejectUnauthorized: false, // Fix for some shared hosting certificate issues
+                ciphers: 'SSLv3'
+            }
         });
 
         // Email Content
