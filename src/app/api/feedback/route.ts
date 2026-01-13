@@ -61,6 +61,7 @@ export async function POST(request: Request) {
             host: host,
             port: port,
             secure: port === 465, // true for 465, false for other ports
+            name: 'bilmem.net', // Force valid hostname for HELO/EHLO checks
             auth: {
                 user: user,
                 pass: pass,
