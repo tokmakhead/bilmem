@@ -31,6 +31,9 @@ export default function ResultsPage() {
         .join(', ');
 
     useEffect(() => {
+        // En yukarı taşı
+        window.scrollTo({ top: 0, behavior: 'instant' });
+
         if (!state.recipient) return;
 
         let isMounted = true;

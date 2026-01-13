@@ -7,7 +7,7 @@ import { WizardAction, Occasion } from '@/types';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export default function WizardPage() {
     const { state, dispatch, canProceed } = useWizard();
@@ -15,6 +15,7 @@ export default function WizardPage() {
     const currentStepInfo = WIZARD_STEPS.find(s => s.number === state.currentStep);
     const [customInterest, setCustomInterest] = useState('');
     const [showCustomInput, setShowCustomInput] = useState(false);
+    const bottomRef = useRef<HTMLDivElement>(null);
 
     // Otomatik yukarı kaydırma
     useEffect(() => {
@@ -58,14 +59,15 @@ export default function WizardPage() {
 
             // Only scroll if we reached the max limit after adding this one
             if (state.interests.length + 1 === MAX_INTERESTS) {
-                handleScrollToBottom();
+                handleScrollToNavigation();
             }
         }
     };
 
-    const handleScrollToBottom = () => {
+    const handleScrollToNavigation = () => {
+        // Butonun azıcık yukarısına/ortasına gelecek şekilde scroll et
         setTimeout(() => {
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 100);
     };
 
@@ -75,13 +77,13 @@ export default function WizardPage() {
 
         // Auto scroll ONLY if we just added an item AND reached the limit
         if (!isSelected && state.interests.length + 1 === MAX_INTERESTS) {
-            handleScrollToBottom();
+            handleScrollToNavigation();
         }
     };
 
     const handleOccasionSelect = (id: string) => {
         dispatch({ type: 'SET_OCCASION', payload: (state.occasion === id ? null : id) as Occasion | null });
-        handleScrollToBottom();
+        handleScrollToNavigation();
     };
 
     return (
@@ -368,7 +370,7 @@ export default function WizardPage() {
                 </div>
 
                 {/* PREMIUM NAVIGATION */}
-                <div className="flex flex-col-reverse items-center justify-between gap-6 sm:flex-row">
+                <div ref={bottomRef} className="flex flex-col-reverse items-center justify-between gap-6 sm:flex-row">
                     <button
                         onClick={handlePrev}
                         className="text-sm font-black uppercase tracking-[0.2em] text-slate-400 transition-colors hover:text-slate-600"
