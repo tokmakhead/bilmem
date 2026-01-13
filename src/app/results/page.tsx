@@ -10,6 +10,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import SharePanel from '@/components/ui/SharePanel';
 import UpsellSection from '@/components/ui/UpsellSection';
+import confetti from 'canvas-confetti';
 
 export default function ResultsPage() {
     const { state, dispatch } = useWizard();
@@ -39,6 +40,33 @@ export default function ResultsPage() {
                 const results = await fetchAIRecommendations(state);
                 if (isMounted) {
                     setRecommendations(results);
+                    // 🎉 CELEBRATION: Trigger confetti when results are found!
+                    if (results.length > 0) {
+                        const duration = 3000;
+                        const end = Date.now() + duration;
+
+                        const frame = () => {
+                            confetti({
+                                particleCount: 2,
+                                angle: 60,
+                                spread: 55,
+                                origin: { x: 0 },
+                                colors: ['#F47F7F', '#FFD6D6', '#ffeeee']
+                            });
+                            confetti({
+                                particleCount: 2,
+                                angle: 120,
+                                spread: 55,
+                                origin: { x: 1 },
+                                colors: ['#F47F7F', '#FFD6D6', '#ffeeee']
+                            });
+
+                            if (Date.now() < end) {
+                                requestAnimationFrame(frame);
+                            }
+                        };
+                        frame();
+                    }
                 }
             } catch (err) {
                 const error = err as Error;
