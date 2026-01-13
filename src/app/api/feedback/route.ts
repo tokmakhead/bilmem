@@ -85,9 +85,14 @@ export async function POST(request: Request) {
 
         // Email Content
         const mailOptions = {
-            from: process.env.FEEDBACK_EMAIL_USER, // Remove friendly name to prevent strict server rejection
+            from: process.env.FEEDBACK_EMAIL_USER,
+            sender: process.env.FEEDBACK_EMAIL_USER, // Explicit sender
             to: process.env.FEEDBACK_TO_EMAIL || process.env.FEEDBACK_EMAIL_USER,
             replyTo: email,
+            envelope: {
+                from: process.env.FEEDBACK_EMAIL_USER as string, // Force Envelope From
+                to: (process.env.FEEDBACK_TO_EMAIL || process.env.FEEDBACK_EMAIL_USER) as string
+            },
             subject: `[Feedback: ${type}] ${subject || 'No Subject'} - AI Hediye`,
             text: `
         Yeni Geri Bildirim:
